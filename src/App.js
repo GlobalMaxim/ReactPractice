@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import Car from "./Car/Car";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    cars: [
+      { name: "Ford", year: 2018 },
+      { name: "Audie", year: 2016 },
+      { name: "Mazda", year: 2010 },
+    ],
+    pageTitle: "React components",
+  };
+
+  changeTitleHandler = (newTitle) => {
+    this.setState({
+      pageTitle: newTitle,
+    });
+  };
+
+  handleInput = (event) => {
+    this.setState({
+      pageTitle: event.target.value
+    })
+  }
+
+  render() {
+    const divStyle = {
+      textAlign: "center",
+    };
+
+    const cars = this.state.cars;
+
+    return (
+      <div style={divStyle}>
+        <h1>{this.state.pageTitle}</h1>
+
+        <input type="text" onChange={this.handleInput}/>
+
+        <button onClick={this.changeTitleHandler.bind(this, 'Changed')}>Change title</button>
+
+        {this.state.cars.map((car, index) => {
+          return (
+            <Car 
+              key={index}
+              name={car.name}
+              year={car.year}
+              onChangeTitle={() => this.changeTitleHandler(car.name)}
+            />
+          )
+        })}
+
+        
+      </div>
+    );
+  }
 }
 
 export default App;
