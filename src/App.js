@@ -6,51 +6,84 @@ class App extends Component {
   state = {
     cars: [
       { name: "Ford", year: 2018 },
-      { name: "Audie", year: 2016 },
+      { name: "Audi", year: 2016 },
       { name: "Mazda", year: 2010 },
     ],
     pageTitle: "React components",
+    showCars: false,
   };
 
-  changeTitleHandler = (newTitle) => {
+  toggleCarsHandler = () => {
     this.setState({
-      pageTitle: newTitle,
+      showCars: !this.state.showCars,
     });
   };
 
-  handleInput = (event) => {
+  onChangeName(name, index) {
+    const car = this.state.cars[index]
+    car.name = name
+    const cars = [...this.state.cars]
+    cars[index] = car
     this.setState({
-      pageTitle: event.target.value
+      cars
     })
   }
+
+  deleteHandler(index) {
+    const cars = this.state.cars.concat()
+    cars.splice(index, 1)
+
+    this.setState({cars})
+  }
+
 
   render() {
     const divStyle = {
       textAlign: "center",
     };
 
-    const cars = this.state.cars;
+    let cars = null
+
+    // const cars = this.state.cars;
+
+    if(this.state.showCars) {
+      cars = this.state.cars.map((car, index) => {
+        return (
+          <Car
+            key={index}
+            name={car.name}
+            year={car.year}
+            onChangeName={event => this.onChangeName(event.target.value, index)}
+            onDelete={this.deleteHandler.bind(this, index)}
+          />
+        );
+      })
+    }
 
     return (
       <div style={divStyle}>
         <h1>{this.state.pageTitle}</h1>
 
-        <input type="text" onChange={this.handleInput}/>
-
-        <button onClick={this.changeTitleHandler.bind(this, 'Changed')}>Change title</button>
-
-        {this.state.cars.map((car, index) => {
-          return (
-            <Car 
-              key={index}
-              name={car.name}
-              year={car.year}
-              onChangeTitle={() => this.changeTitleHandler(car.name)}
-            />
-          )
-        })}
-
+        <button onClick={this.toggleCarsHandler}>Toggle cars</button>
+        <div style={{
+          width: 400,
+          margin: 'auto',
+          paddingTop: '20px'}}>
+          {cars}
+        </div>
         
+        {/* /* {this.state.showCars
+          ? this.state.cars.map((car, index) => {
+              return (
+                <Car
+                  key={index}
+                  name={car.name}
+                  year={car.year}
+                  onChangeTitle={() => this.changeTitleHandler(car.name)}
+                />
+              );
+            })
+          : null} */}
       </div>
     );
   }
