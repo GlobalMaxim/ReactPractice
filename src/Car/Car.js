@@ -1,45 +1,91 @@
 import React from "react";
-import Radium from 'radium'
-import "./Car.css";
+// import Radium from "radium";
+import classes from "./Car.module.css";
+import withClass from '../hoc/withClass'
+import PropTypes from 'prop-types'
 
-const Car = props => {
-  const inputClasses = ['input']
+class Car extends React.Component {
 
-  if (props.name !== '') {
-    inputClasses.push('green')
-  } else {
-    inputClasses.push('red')
+  // componentWillReceiveProps(nextProps) {
+  //   console.log('componentWillReceiveProps', nextProps)
+  // }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log('shouldComponentUpdate', nextProps, nextState)
+  //   return true
+  // }
+  // componentWillUpdate(nextProps, nextState) {
+  //   console.log('componentWillUpdate', nextProps, nextState)
+  // }
+  // // static getDerivedStateFromFrops(nextProps, prevState) {
+  // //   console.log('getDerivedStateFromFrops', nextProps, prevState)
+  // //   return prevState
+  // // }
+  // componentDidUpdate() {
+  //   console.log('componentDidUpdate', )
+  // }
+  // getSnapshotBeforeUpdate() {
+  //   console.log('getSnapshotBeforeUpdate')
+  // }
+  // componentWillUnmount() {
+  //   console.log('componentWillUnmount')
+  // }
+
+  constructor(props) {
+    super(props)
+
+    this.inputRef = React.createRef()
   }
 
-  if (props.name.length > 4) {
-    inputClasses.push('bold')
-  }
-
-  const style = {
-    border: '1px solid #ccc',
-    boxShadow: '0 4px 5px 0 rgba(0, 0, 0, .14)',
-    ':hover': {
-      border: '1px solid #aaa',
-      boxShadow: '0 4px 15px 0 rgba(0, 0, 0, .25)',
-      cursor: 'pointer'
+  componentDidMount() {
+    if (this.props.index === 0) {
+      this.inputRef.current.focus()
     }
+    
   }
 
-  return (
-    <div className="Car" style={style}>
-      <h3>Сar name: {props.name}</h3>
-      <p>
-        Year: <strong>{props.year}</strong>
-      </p>
-      <input 
-        type="text" 
-        onChange={props.onChangeName} 
-        value={props.name} 
-        className={inputClasses.join(' ')}
-        />
-      <button onClick={props.onDelete}>Delete</button>
-    </div>
-  );
-};
+  render() {
+    // console.log('render')
+    // if (Math.random() > 0.7) {
+    //   throw new Error('Car random failed')
+    // }
+    const inputClasses = [classes.input]
 
-export default Radium(Car)
+    if (this.props.name !== "") {
+      inputClasses.push(classes.green);
+      
+    } else {
+      inputClasses.push(classes.red);
+    }
+
+    if (this.props.name.length > 4) {
+      inputClasses.push(classes.bold);
+    }
+
+    return (
+      <React.Fragment>
+        <h3>Сar name: {this.props.name}</h3>
+        <p>
+          Year: <strong>{this.props.year}</strong>
+        </p>
+        <input
+          ref={this.inputRef}
+          type="text"
+          onChange={this.props.onChangeName}
+          value={this.props.name}
+          className={inputClasses.join(" ")}
+        />
+        <button onClick={this.props.onDelete}>Delete</button>
+      </React.Fragment>
+    );
+  }
+}
+
+Car.propTypes = {
+  name: PropTypes.string.isRequired,
+  year: PropTypes.number,
+  index: PropTypes.number,
+  onChangeName: PropTypes.func,
+  onDelete: PropTypes.func,
+}
+
+export default withClass(Car, classes.Car);
